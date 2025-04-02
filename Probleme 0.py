@@ -9,3 +9,9 @@ def compatible(creneau_1, creneau_2):
     if (j[0] <= dim[0] and j[0] <= dim[1]) or (j[1] <= dim[0] and j[1] <= dim[1]):
         return False
     return True
+
+def compatible_planning(planning, creneau):
+    for j in planning:
+        if not compatible(j, creneau):
+            return False
+    return True
