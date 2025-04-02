@@ -2,7 +2,7 @@ def tri_rdv(demandes, borne_de_tri = "début"): #trie les rdv par ordre d'heure 
     #bornes_de_tri peut etre "début" ou "fin"
     n = len(demandes)
     
-    demandes_classées = [[demande[i], i] for i in range(n)] #on ajoute un indice pour pouvoir ranger a la fin dans l'ordre original
+    demandes_classées = [[demandes[i], i] for i in range(n)] #on ajoute un indice pour pouvoir ranger a la fin dans l'ordre original
     
     if borne_de_tri = "début" : 
         demandes_classées = sorted(demandes_classées, key = lambda x: x[0][0]) #on trie par heure de début de rdv
