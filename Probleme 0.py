@@ -2,7 +2,8 @@
 """
 Created on Wed Apr  2 13:22:52 2025
 
-@author: Noreddine
+@author: Romain
 """
 
-caca
+def optim_planning(demandes , nbr_jour = 0):
+    
