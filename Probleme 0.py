@@ -17,5 +17,16 @@ def crée_demandes(n,Hmax):
         demandes.append((hdeb,hfin))
     return demandes
 
-crée_demandes(10, Hmax)
+demandes = crée_demandes(10, Hmax)
     
+def tri_rdv(demandes): #trie les rdv par ordre d'heure de dÃ©but et ajoute un indice pour retrouver l'ordre initial des rdv dans la variable demandes
+    
+    n = len(demandes)
+    
+    demandes_classes = [[demandes[i], i] for i in range(n)] #on ajoute un indice pour pouvoir ranger a la fin dans l'ordre original
+    
+    demandes_classes = sorted(demandes_classes, key = lambda x: x[0][0]) #on trie par heure de dÃ©but de rdv
+
+    return demandes_classes
+
+tri_rdv(demandes)
