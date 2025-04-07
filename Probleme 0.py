@@ -26,34 +26,59 @@ crée_demandes(10, Hmax)
 def tri_rdv(demandes, borne_de_tri = "début"): #trie les rdv par ordre d'heure de début et ajoute un indice pour retrouver l'ordre initial des rdv dans la variable demandes
     #bornes_de_tri peut etre "début", "fin" ou "longueur"
     n = len(demandes)
-    
-    if isinstance(demandes[0], tuple) == True: # verifie si il y a déja l'indice de tri ou non
-        demandes_classées = [[demandes[i], i] for i in range(n)] #si non, on ajoute un indice pour pouvoir ranger a la fin dans l'ordre original
-    else : 
-        demandes_classées = demandes #si oui
-        
+
     if borne_de_tri == "début" : 
-        demandes_classées = sorted(demandes_classées, key = lambda x: x[0][0]) #on trie par heure de début de rdv
+        demandes_classées = sorted(demandes, key = lambda x: x[0]) #on trie par heure de début de rdv
     elif borne_de_tri == "fin": 
-        demandes_classées = sorted(demandes_classées, key = lambda x: x[0][1]) #si on veut trier par heure de fin de rdv
-    elif borne_de_tri == "longueur":
-        demandes_classées = sorted(demandes_classées, key = lambda x: abs(x[0][0] - x[0][1])) #si on veut trier par durée du rdv
+        demandes_classées = sorted(demandes, key = lambda x: x[1]) #si on veut trier par heure de fin de rdv
+    elif borne_de_tri == "longueur croissante":
+        demandes_classées = sorted(demandes, key = lambda x: abs(x[0] - x[1])) #si on veut trier par durée du rdv croissante
+    elif borne_de_tri == "longueur décroissante":
+        demandes_classées = sorted(demandes, key = lambda x: abs(x[0] - x[1])) #si on veut trier par durée du rdv decroissante
+        demandes_classées.reverse()
     else : 
         print("aucun tri effectué, borne_de_tri invalide")
 
     return (demandes_classées)
 
 
+def optim_planningv1(demandes):
+    #demandes = supprime_longs(demandes)
+    demandes = tri_rdv(demandes, "fin")
+    n = len(demandes)
 
-def optim_planning(demandes, opti = [], taille = 0):
+    planning = []
+    planning.append(demandes[0])
+
+    i=1
+    while i < n:
+
+        if demandes[i][0] >= planning[-1][1]:
+            planning.append(demandes[i])
+
+        i += 1
+
+    return planning
+
+"""
+demandes = crée_demandes(10, Hmax)
+demandes_classées = tri_rdv(demandes, borne_de_tri = "fin")
+
+
+print(demandes_classées, "\n")
+print(optim_planningv1(demandes))
+"""
+
+
+def optim_planningv2(demandes, opti = [], taille = 0):
     if len(demandes) == 0:
         return list(opti)
     new_demandes = demandes
     creneau_examiner = new_demandes.pop()
     solution1 = []
     if compatible_planning(opti,creneau_examiner):
-        solution1 = optim_planning(demandes,opti+[creneau_examiner],taille+1)
-    solution2 = optim_planning(demandes,opti,taille) 
+        solution1 = optim_planningv2(demandes,opti+[creneau_examiner],taille+1)
+    solution2 = optim_planningv2(demandes,opti,taille) 
     if len(solution1) > len(solution2):
         return solution1
     return solution2
@@ -62,18 +87,21 @@ def optim_planning(demandes, opti = [], taille = 0):
 Hmax = 10000
 nombre_demandes = 20
 
+
 # Générer des demandes aléatoires
-demandes = crée_demandes(nombre_demandes, Hmax)
+#demandes = crée_demandes(nombre_demandes, Hmax)
+demandes = [(0,1),(2,5),(5,8),(2,4),(3,4),(5,9),(1,2)]
+
 
 print("Demandes générées :")
 for demande in demandes:
     print(demande)
 
 # Appliquer l'optimisation
-planification_optimale = optim_planning(demandes)
-tri_rdv(planification_optimale)
+planification_optimale = optim_planningv2(demandes)
+planification_optimal = tri_rdv(planification_optimale)
 print("\nPlanification optimale :")
-for creneau in planification_optimale:
+for creneau in planification_optimal:
     print(creneau)
 
     
