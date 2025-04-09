@@ -5,7 +5,13 @@ def compatible(creneau_1, creneau_2):
     return creneau_1[1] < creneau_2[0] or creneau_2[1] < creneau_1[0]
 
 
-def compatible_planning(planning, creneau):
+def compatible(creneau_1, creneau_2): # Vérifie que deux créneaux sont compatible ensemble
+    if (creneau_1[0] >= creneau_2[0] and creneau_1[0] <= creneau_2[1]) or (creneau_1[1] >= creneau_2[0] and creneau_1[1] <= creneau_2[1]):
+        return False
+    return True
+
+
+def compatible_planning(planning, creneau): # 
     for cre in planning:
         if not compatible(cre, creneau):
             return False
@@ -23,10 +29,9 @@ def crée_demandes(n,Hmax):
 
 crée_demandes(10, Hmax)
 
-def tri_rdv(demandes, borne_de_tri = "début"): #trie les rdv par ordre d'heure de début et ajoute un indice pour retrouver l'ordre initial des rdv dans la variable demandes
-    #bornes_de_tri peut etre "début", "fin" ou "longueur"
-    n = len(demandes)
 
+def tri_rdv(demandes, borne_de_tri = "début"): #trie les rdv par ordre d'heure de début et ajoute un indice pour retrouver l'ordre initial des rdv dans la variable demandes
+        
     if borne_de_tri == "début" : 
         demandes_classées = sorted(demandes, key = lambda x: x[0]) #on trie par heure de début de rdv
     elif borne_de_tri == "fin": 
@@ -35,7 +40,7 @@ def tri_rdv(demandes, borne_de_tri = "début"): #trie les rdv par ordre d'heure 
         demandes_classées = sorted(demandes, key = lambda x: abs(x[0] - x[1])) #si on veut trier par durée du rdv croissante
     elif borne_de_tri == "longueur décroissante":
         demandes_classées = sorted(demandes, key = lambda x: abs(x[0] - x[1])) #si on veut trier par durée du rdv decroissante
-        demandes_classées.reverse()
+        demandes_classées.reverse()                   
     else : 
         print("aucun tri effectué, borne_de_tri invalide")
 
@@ -68,40 +73,39 @@ demandes_classées = tri_rdv(demandes, borne_de_tri = "fin")
 print(demandes_classées, "\n")
 print(optim_planningv1(demandes))
 """
+    
 
 
-def optim_planningv2(demandes, opti = [], taille = 0):
-    if len(demandes) == 0:
-        return list(opti)
-    new_demandes = demandes
-    creneau_examiner = new_demandes.pop()
-    solution1 = []
-    if compatible_planning(opti,creneau_examiner):
-        solution1 = optim_planningv2(demandes,opti+[creneau_examiner],taille+1)
-    solution2 = optim_planningv2(demandes,opti,taille) 
-    if len(solution1) > len(solution2):
-        return solution1
-    return solution2
+demande_classee = tri_rdv(demandes)
+    
+total = []
 
-# Tester avec des demandes aléatoires
-Hmax = 10000
-nombre_demandes = 20
+# Marche pas encore
+def solution_exhaustive(demandes, curr = [], i=0,d=0): # Énumération exhaustive appris en mineure info
+    maxi = 0
+    meilleur_planning = []
+    if i == len(demandes):
+        total.append(curr)
+        if d == len(demandes)-1:
+            for planning in total:
+             taille = len(planning)
+             if taille >= maxi:
+                 maxi = taille 
+                 meilleur_planning = planning
+        d += 1
+        i = d
+        curr = []
+    print(f"d : {d}")
+    print(f"i : {i}")
+    if compatible_planning(curr, demandes[i-1]):    
+        solution_exhaustive(demandes, curr, i+1, d)
+        curr.append(demandes[i])
+        solution_exhaustive(demandes, i+1, d)
+        curr.pop()
+    return
+
+print(solution_exhaustive(demande_classee))
 
 
-# Générer des demandes aléatoires
-#demandes = crée_demandes(nombre_demandes, Hmax)
-demandes = [(0,1),(2,5),(5,8),(2,4),(3,4),(5,9),(1,2)]
-
-
-print("Demandes générées :")
-for demande in demandes:
-    print(demande)
-
-# Appliquer l'optimisation
-planification_optimale = optim_planningv2(demandes)
-planification_optimal = tri_rdv(planification_optimale)
-print("\nPlanification optimale :")
-for creneau in planification_optimal:
-    print(creneau)
 
     
