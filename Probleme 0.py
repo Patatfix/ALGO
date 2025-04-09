@@ -27,7 +27,6 @@ def crée_demandes(n,Hmax):
         demandes.append((hdeb,hfin))
     return demandes
 
-crée_demandes(10, Hmax)
 
 
 def tri_rdv(demandes, borne_de_tri = "début"): #trie les rdv par ordre d'heure de début et ajoute un indice pour retrouver l'ordre initial des rdv dans la variable demandes
@@ -75,7 +74,7 @@ print(optim_planningv1(demandes))
 """
     
 
-
+demandes = crée_demandes(10, Hmax)
 demande_classee = tri_rdv(demandes)
     
 total = []
