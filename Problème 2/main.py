@@ -12,8 +12,8 @@ def lire_fichier(nom_fichier):
             raise ValueError("Fichier de coordonnées mal formé")
     return mots
 
-texte1 = lire_fichier("reccherche_p1.txt")
-print(len(texte1))
+# texte1 = lire_fichier("reccherche_p1.txt")
+# print(len(texte1))
 
 
 def calcul_S(texte, L):
