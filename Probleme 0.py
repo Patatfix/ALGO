@@ -1,9 +1,6 @@
 import random
 Hmax = 10000
 
-def compatible(creneau_1, creneau_2):
-    return creneau_1[1] < creneau_2[0] or creneau_2[1] < creneau_1[0]
-
 
 def compatible(creneau_1, creneau_2): # Vérifie que deux créneaux sont compatible ensemble
     if (creneau_1[0] >= creneau_2[0] and creneau_1[0] <= creneau_2[1]) or (creneau_1[1] >= creneau_2[0] and creneau_1[1] <= creneau_2[1]):
