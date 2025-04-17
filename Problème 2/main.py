@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Apr 17 15:22:23 2025
-
-@author: Noreddine
-"""
 import numpy as np
 
 def lire_fichier(nom_fichier):
