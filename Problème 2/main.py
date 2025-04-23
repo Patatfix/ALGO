@@ -254,5 +254,3 @@ cSolution = calcul_S(solution, L)
 affiche_texte(solution, L)
 print(cSolution)
 
-
->>>>>>> cbc883da6f345eedb854a2931881e22a8dc2b3d7
