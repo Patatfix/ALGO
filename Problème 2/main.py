@@ -41,12 +41,15 @@ def liste_erreur(solution, L):
 
 # %% Exhaustif
 
-def exhaustif(texte, L):
-    if texte[-1] == '\n':
+def exhaustif(texte, L): #fonctionne pour environ 265 mots, soit environ 1500 caractères
+    
+    if texte[-1] == '\n': #on enleve un potentiel retour à la ligne
         texte = texte[:-1]
-    mots = texte.split(' ')
+        
+    mots = texte.split(' ') 
     n = len(mots)
-    tailles_mots = [len(mot) for mot in mots]
+    print(n)
+    # tailles_mots = [len(mot) for mot in mots]
 
     S_opt = float('inf')
     texte_opt = None
@@ -55,6 +58,7 @@ def exhaustif(texte, L):
     mots_restants = mots[1:]
     
     texte_opt, S_opt = aux_exhaustif(texte, texte_opt, S_opt, mots_restants, L)
+    
     return texte_opt, S_opt
 
 def aux_exhaustif(texte, texte_opt, S_opt, mots_restants, L):
@@ -69,7 +73,7 @@ def aux_exhaustif(texte, texte_opt, S_opt, mots_restants, L):
     if calcul_S(texte[:-1], L) > S_opt:               #backtracking, si meme alors que c'est pas fini, 
         return texte_opt, S_opt
     
-    #2 cas, soit le mot d'apres rentre dans la ligne, soit on fait un retour
+    # a chaque étape, 2 choix max, soit le mot d'apres rentre dans la ligne, soit on fait un retour
     mot_a_caler = mots_restants[0]
     if len(texte[-1]) + 1 + len(mot_a_caler) <= L: #on verifie deja si ca peut rentrer avec l'espace, si on a le choix
         texte_bis = texte[:-1] + [texte[-1] + ' ' + mot_a_caler]
@@ -78,6 +82,16 @@ def aux_exhaustif(texte, texte_opt, S_opt, mots_restants, L):
     texte_opt, S_opt = aux_exhaustif(texte + [mot_a_caler], texte_opt, S_opt, mots_restants[1:], L)
     
     return np.array(texte_opt), S_opt
+    
+    
+def affiche_texte(texte_opt, L):
+    
+    for ligne in texte_opt:
+        a = len(ligne)
+        print(ligne + (L-a)*'_')
+        
+    print("\nS =", calcul_S(texte_opt, L))
+    return
 
 
 def affiche_texte(texte_opt, L):
