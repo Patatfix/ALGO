@@ -12,9 +12,13 @@ def lire_fichier(nom_fichier):
             raise ValueError("Fichier de coordonnées mal formé")
     return mots
 
-# texte1 = lire_fichier("reccherche_p1.txt")
-# print(len(texte1))
-
+def liste_taille(nom_fichier):
+    liste_mots = lire_fichier(nom_fichier)
+    T = []
+    for mot in liste_mots:
+        taille = len(mot)
+        T.append(taille)
+    return T
 
 def calcul_S(texte, L):
     S = 0
@@ -28,6 +32,14 @@ def vers_fichier_texte(texte_opti, nom_fichier):
         fichier.write(str(ligne) + "\n")
     fichier.close()
     return
+
+def liste_erreur(solution, L):
+    erreur = []
+    for i in range(len(solution)):
+        erreur.append((L - solution[i])**2)
+    return erreur
+
+# %% Exhaustif
 
 def exhaustif(texte, L):
     if texte[-1] == '\n':
@@ -76,11 +88,91 @@ def affiche_texte(texte_opt, L):
     print("\n\nS =", calcul_S(texte_opt, L))
     return
 
-#%% Tests
-texte = "je suis une patate chaude et j'aime les patates"
+# %% Glouton
 
-texte_opt = ["Je suis une patate", "chaude et j'aime", "les patates"]
+def ajouter_mot(solution, mot):
+    if len(solution) == 0:
+        solution.append(mot)
+        return solution
+    if len(solution[-1]) < L - len(mot):
+        solution[-1] += " " + mot
+    else:
+        solution.append(mot)
+    return solution
 
-vers_fichier_texte(texte_opt, "Texte_opti.txt")
+def glouton(texte, L):
+    texte_r = texte[::-1]
+    solution = []
+    while len(texte_r): 
+        mot = texte_r.pop()
+        solution = ajouter_mot(solution, mot)
+    return solution
 
+# %% avant_apres
+
+
+def avant_apres(texte, L, reverse=False):
+    if not reverse:
+        texte_r = texte[::-1]
+    else:
+        texte_r = texte
+    solution = []
+    while len(texte_r):
+        mot = texte_r.pop()
+        if len(solution) == 0:
+            solution.append(mot)
+        elif len(solution[-1]) + 1 + len(mot) == L:
+            solution.append(mot)
+        elif len(solution[-1]) < L - len(mot) and (len(mot)>= 3 or len(solution[-1] + " " + mot) < L - len(texte_r[-1])):
+            solution[-1] += " " + mot
+        elif len(solution[-1]) < L - len(mot):
+            s1 = avant_apres(texte_r + [mot], L, True)
+            s2 = avant_apres(texte_r, L, True)
+            s = solution.copy()
+            s[-1] += " " + mot
+            cs1, cs2 = calcul_S(solution + s1, L), calcul_S(s + s2, L)
+
+            if cs1 > cs2:
+                return s + s2
+            else:
+                return solution + s1
+        else:
+            solution.append(mot)
+    return solution
     
+
+
+# %% Test
+
+# Test recursive
+import sys
+
+sys.setrecursionlimit(100000)
+
+L = 20
+rec_p1 = lire_fichier("recherche_p1.txt")
+recursive_p1 = recursive(rec_p1, L)
+cSolution = calcul_S(recursive_p1, L)
+affiche_texte(recursive_p1, L)
+print(cSolution)
+print("\n")
+
+# Texte glouton
+L = 20
+rec_p1 = lire_fichier("recherche_p1.txt")
+
+solution = glouton(rec_p1, L)
+cSolution = calcul_S(solution, L)
+affiche_texte(solution, L)
+print(cSolution)
+print("\n")
+
+# Test avant_apres
+
+L = 20
+t = lire_fichier("test_court.txt")
+solution = avant_apres(rec_p1[:100], L)
+cSolution = calcul_S(solution, L)
+
+affiche_texte(solution, L)
+print(cSolution)
