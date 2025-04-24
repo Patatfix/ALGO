@@ -224,7 +224,7 @@ def memo_cout_optimal(liste_tailles_mots, L, i=0, d=None):
     return d[i]
 
 
-#%% 
+#%% Algorithme itératif (Programmation dynamique)
 
 """ 
 Ce programme calcule le cout de mise en page minimum et renvoie la mise en page correspondante.
